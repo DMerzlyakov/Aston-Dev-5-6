@@ -1,6 +1,7 @@
 package com.example.aston_dev_5.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.aston_dev_5.ConstantsProject;
 import com.example.aston_dev_5.HelpersUtil;
@@ -90,6 +92,10 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
                 } else {
                     getParentFragmentManager().popBackStack();
                 }
+
+                // Закрываем клавиатуру пользователя при сохранении
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 break;
         }
     }
