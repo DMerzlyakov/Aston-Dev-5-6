@@ -32,7 +32,7 @@ public class PlaceholderContent {
     private static PlaceholderItem createPlaceholderItem(int position) {
         return new PlaceholderItem(
                 String.valueOf(position), "Данила  " + position,
-                "Мерзляков " + position, "+7916667803" + position
+                "Мерзляков " + position, "+79166" + position
         );
     }
 

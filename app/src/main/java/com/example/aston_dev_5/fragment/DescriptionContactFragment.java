@@ -17,7 +17,7 @@ import com.example.aston_dev_5.databinding.FragmentDescriptionContactBinding;
  */
 public class DescriptionContactFragment extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "name";
     private static final String ARG_PARAM2 = "surname";
     private static final String ARG_PARAM3 = "number";
@@ -47,12 +47,6 @@ public class DescriptionContactFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Log.e("asd", "init");
-//        if (savedInstanceState != null) {
-//            mName = savedInstanceState.getString(ARG_PARAM1);
-//            mSurname = savedInstanceState.getString(ARG_PARAM2);
-
-//        }
         if (getArguments() != null) {
             mName = getArguments().getString(ARG_PARAM1);
             mSurname = getArguments().getString(ARG_PARAM2);
@@ -74,13 +68,6 @@ public class DescriptionContactFragment extends Fragment {
 
         return binding.getRoot();
     }
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putString(ARG_PARAM1, mName);
-//        outState.putString(ARG_PARAM2, mSurname);
-//    }
 
 
 }
