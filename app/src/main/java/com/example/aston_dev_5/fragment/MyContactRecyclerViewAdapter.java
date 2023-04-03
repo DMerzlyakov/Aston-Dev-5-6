@@ -3,24 +3,23 @@ package com.example.aston_dev_5.fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.aston_dev_5.placeholder.PlaceholderContent.PlaceholderItem;
+import com.example.aston_dev_5.placeholder.ContactContent.ContactItem;
 import com.example.aston_dev_5.databinding.FragmentContactBinding;
 
 import java.util.List;
 
 /**
- *
+ * MyContactAdapter для RecyclerView. Обрабатывает изменения списка и обрабатывает нажатия
  */
 public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<ContactItem> mValues;
     private final OnClickRecyclerViewInterface onClickRecyclerViewInterface;
 
-    public MyContactRecyclerViewAdapter(List<PlaceholderItem> items, OnClickRecyclerViewInterface onClickRecyclerViewInterface) {
+    public MyContactRecyclerViewAdapter(List<ContactItem> items, OnClickRecyclerViewInterface onClickRecyclerViewInterface) {
         mValues = items;
         this.onClickRecyclerViewInterface = onClickRecyclerViewInterface;
     }
@@ -49,7 +48,7 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
         public final TextView mNumberView;
         public final TextView mNameView;
         public final TextView mSurnameView;
-        public PlaceholderItem mItem;
+        public ContactItem mItem;
 
         public ViewHolder(FragmentContactBinding binding) {
             super(binding.getRoot());
@@ -70,7 +69,10 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mNameView.getText() + "'";
+            return super.toString() + " '"
+                    + mNameView.getText() + " "
+                    + mSurnameView.getText() + " "
+                    + mSurnameView.getText() + " '";
         }
     }
 }

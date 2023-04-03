@@ -2,4 +2,7 @@
     <string name="app_name">Aston-dev-5</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_edit_text">Edit Contact</string>
+    <string name="btn_save_text">Save</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.aston_dev_5.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,77 +11,159 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.aston_dev_5.ConstantsProject;
+import com.example.aston_dev_5.HelpersUtil;
+import com.example.aston_dev_5.R;
 import com.example.aston_dev_5.databinding.FragmentDescriptionContactBinding;
 
 /**
- *
+ * DescriptionContactFragment - Фрагмент для отображения подробной информации о Контакте
  */
-public class DescriptionContactFragment extends Fragment {
+public class DescriptionContactFragment extends Fragment implements View.OnClickListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "name";
-    private static final String ARG_PARAM2 = "surname";
-    private static final String ARG_PARAM3 = "number";
-
+    private int mId;
     private String mName;
     private String mSurname;
     private String mPhoneNumber;
 
     private FragmentDescriptionContactBinding binding;
 
+    /**
+     * Пустой конструктор DescriptionContactFragment
+     */
     public DescriptionContactFragment() {
-        // Required empty public constructor
     }
 
-    public static DescriptionContactFragment newInstance(String name, String surname, String number) {
-
-        DescriptionContactFragment fragment = new DescriptionContactFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, name);
-        args.putString(ARG_PARAM2, surname);
-        args.putString(ARG_PARAM3, number);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Log.e("asd", "init");
-//        if (savedInstanceState != null) {
-//            mName = savedInstanceState.getString(ARG_PARAM1);
-//            mSurname = savedInstanceState.getString(ARG_PARAM2);
-
-//        }
         if (getArguments() != null) {
-            mName = getArguments().getString(ARG_PARAM1);
-            mSurname = getArguments().getString(ARG_PARAM2);
-            mPhoneNumber = getArguments().getString(ARG_PARAM3);
+            mId = getArguments().getInt(ConstantsProject.ARG_PARAM_ID);
+            mName = getArguments().getString(ConstantsProject.ARG_PARAM_NAME);
+            mSurname = getArguments().getString(ConstantsProject.ARG_PARAM_SURNAME);
+            mPhoneNumber = getArguments().getString(ConstantsProject.ARG_PARAM_PHONE_NUMBER);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentDescriptionContactBinding.inflate(inflater, container, false);
 
-        binding.nameView.setText(mName);
+        setTextToTextView();
 
-        binding.surnameView.setText(mSurname);
-
-        binding.phoneView.setText(mPhoneNumber);
+        binding.btnEdit.setOnClickListener(this);
+        binding.btnSave.setOnClickListener(this);
+        binding.btnCancel.setOnClickListener(this);
 
         return binding.getRoot();
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putString(ARG_PARAM1, mName);
-//        outState.putString(ARG_PARAM2, mSurname);
-//    }
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_edit:
+            case R.id.btn_cancel:
+                changeVisibilityButtons();
+                changeVisibilityTextViews();
+                break;
 
+            case R.id.btn_save:
+                mName = binding.editNameView.getText().toString();
+                mSurname = binding.editSurnameView.getText().toString();
+                mPhoneNumber = binding.editPhoneView.getText().toString();
 
+                Bundle args = new Bundle();
+                args.putInt(ConstantsProject.ARG_PARAM_ID, mId);
+                args.putString(ConstantsProject.ARG_PARAM_NAME, mName);
+                args.putString(ConstantsProject.ARG_PARAM_SURNAME, mSurname);
+                args.putString(ConstantsProject.ARG_PARAM_PHONE_NUMBER, mPhoneNumber);
+                getParentFragmentManager().setFragmentResult(ConstantsProject.REQUEST_KEY, args);
+
+                if (HelpersUtil.isScreenForTwoFragments(getResources())) {
+                    changeVisibilityButtons();
+                    changeVisibilityTextViews();
+                    setTextToTextView();
+                } else {
+                    getParentFragmentManager().popBackStack();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Отображение текстовых данных на фрагменте
+     */
+    private void setTextToTextView() {
+        binding.nameView.setText(mName);
+        binding.surnameView.setText(mSurname);
+        binding.phoneView.setText(mPhoneNumber);
+    }
+
+    /**
+     * Изменение видимости кнопок
+     * Переходы реализованы в виде:
+     * Visible -> Gone
+     * Gone -> Visible
+     */
+    private void changeVisibilityButtons() {
+        if (binding.btnEdit.getVisibility() == View.VISIBLE) {
+            binding.btnEdit.setVisibility(View.GONE);
+            binding.btnSave.setVisibility(View.VISIBLE);
+            binding.btnCancel.setVisibility(View.VISIBLE);
+        } else {
+            binding.btnEdit.setVisibility(View.VISIBLE);
+            binding.btnSave.setVisibility(View.GONE);
+            binding.btnCancel.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Изменение видимости TextView и EditText
+     * Переходы реализованы в виде:
+     * Visible -> Gone
+     * Gone -> Visible
+     */
+    private void changeVisibilityTextViews() {
+        int editVisibility, textVisibility;
+
+        if (binding.nameView.getVisibility() == View.VISIBLE) {
+            editVisibility = View.VISIBLE;
+            textVisibility = View.GONE;
+        } else {
+            editVisibility = View.GONE;
+            textVisibility = View.VISIBLE;
+        }
+
+        binding.editNameView.setVisibility(editVisibility);
+        binding.editSurnameView.setVisibility(editVisibility);
+        binding.editPhoneView.setVisibility(editVisibility);
+
+        if (editVisibility == View.VISIBLE) {
+            binding.editNameView.setText(mName);
+            binding.editSurnameView.setText(mSurname);
+            binding.editPhoneView.setText(mPhoneNumber);
+        }
+
+        binding.nameView.setVisibility(textVisibility);
+        binding.surnameView.setVisibility(textVisibility);
+        binding.phoneView.setVisibility(textVisibility);
+    }
+
+    /** Создание экземпляра Фрагмента с первоначальными данными */
+    public static DescriptionContactFragment newInstance(int id, String name, String surname, String number) {
+
+        DescriptionContactFragment fragment = new DescriptionContactFragment();
+        Bundle args = new Bundle();
+        args.putInt(ConstantsProject.ARG_PARAM_ID, id);
+        args.putString(ConstantsProject.ARG_PARAM_NAME, name);
+        args.putString(ConstantsProject.ARG_PARAM_SURNAME, surname);
+        args.putString(ConstantsProject.ARG_PARAM_PHONE_NUMBER, number);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 }

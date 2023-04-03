@@ -1,29 +1,29 @@
 package com.example.aston_dev_5.fragment;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.aston_dev_5.ConstantsProject;
+import com.example.aston_dev_5.HelpersUtil;
 import com.example.aston_dev_5.R;
-import com.example.aston_dev_5.placeholder.PlaceholderContent;
+import com.example.aston_dev_5.placeholder.ContactContent;
 
 /**
- * A fragment representing a list of Items.
+ * ContactFragment - Отображение RecyclerView контактов
  */
 public class ContactFragment extends Fragment implements OnClickRecyclerViewInterface {
 
+
+    private MyContactRecyclerViewAdapter adapter;
+
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Пустой конструктор ContactFragment
      */
     public ContactFragment() {
     }
@@ -34,44 +34,53 @@ public class ContactFragment extends Fragment implements OnClickRecyclerViewInte
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
 
-        // Set the adapter
+        // Установка адаптера для RecyclerView
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-            recyclerView.setAdapter(new MyContactRecyclerViewAdapter(PlaceholderContent.ITEMS, this));
+            adapter = new MyContactRecyclerViewAdapter(ContactContent.ITEMS, this);
+            recyclerView.setAdapter(adapter);
         }
+
+        setFragmentResultListeners();
+
         return view;
     }
 
+    private void setFragmentResultListeners() {
+        getParentFragmentManager().setFragmentResultListener(ConstantsProject.REQUEST_KEY, this,
+                (requestKey, result) -> {
 
-    public static ContactFragment newInstance() {
-        //        Bundle args = new Bundle();
-//        args.putInt(ARG_COLUMN_COUNT, columnCount);
-//        fragment.setArguments(args);
-        return new ContactFragment();
+                    String mName = result.getString(ConstantsProject.ARG_PARAM_NAME);
+                    String mSurname = result.getString(ConstantsProject.ARG_PARAM_SURNAME);
+                    String mPhoneNumber = result.getString(ConstantsProject.ARG_PARAM_PHONE_NUMBER);
+
+                    ContactContent.ContactItem data = new ContactContent.ContactItem(
+                            result.getInt("id"), result.getString("name"),
+                            result.getString("surname"), result.getString("number")
+                    );
+
+                    ContactContent.ITEMS.get(data.id).editItem(mName, mSurname, mPhoneNumber);
+
+                    adapter.notifyItemChanged(data.id);
+                });
     }
 
+
     @Override
-    public void onItemClick(PlaceholderContent.PlaceholderItem item) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                || isTablet()) {
+    public void onItemClick(ContactContent.ContactItem item) {
+        if (HelpersUtil.isScreenForTwoFragments(getResources())) {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer2,
-                             DescriptionContactFragment.newInstance(item.name, item.surname, item.phoneNumber))
+                            DescriptionContactFragment.newInstance(item.id, item.name, item.surname, item.phoneNumber))
                     .commit();
         } else {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer,
-                            DescriptionContactFragment.newInstance(item.name, item.surname, item.phoneNumber))
+                            DescriptionContactFragment.newInstance(item.id, item.name, item.surname, item.phoneNumber))
                     .addToBackStack(null)
                     .commit();
         }
-    }
-
-
-    public boolean isTablet() {
-        return (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }

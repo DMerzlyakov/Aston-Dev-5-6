@@ -10,26 +10,15 @@ import com.example.aston_dev_5.fragment.ContactFragment;
 
 public class MainActivity extends FragmentActivity {
 
-    ContactFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.e("er", String.valueOf(savedInstanceState));
-
-        fragment = ContactFragment.newInstance();
-
-
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+                .replace(R.id.fragmentContainer, new ContactFragment())
                 .commit();
-
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 }

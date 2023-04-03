@@ -10,6 +10,7 @@
         android:id="@+id/nameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:textSize="@dimen/description_text_size"
         app:layout_constraintBottom_toTopOf="@+id/phoneView"
         app:layout_constraintEnd_toStartOf="@+id/surnameView"
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_margin"
+        android:textColor="@color/black"
         android:textSize="@dimen/description_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -34,13 +36,102 @@
         android:id="@+id/phoneView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/phone_top_margin"
+        android:textColor="@color/black"
         android:textSize="@dimen/description_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameView" />
+
+    <EditText
+        android:id="@+id/editNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:textSize="@dimen/description_text_size"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/editPhoneView"
+        app:layout_constraintEnd_toStartOf="@+id/editSurnameView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/editSurnameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_margin"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:textSize="@dimen/description_text_size"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editNameView"
+        app:layout_constraintTop_toTopOf="@+id/editNameView"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/editPhoneView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:importantForAutofill="no"
+        android:inputType="phone"
+        android:textSize="@dimen/description_text_size"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNameView"
+        tools:ignore="LabelFor" />
+
+    <Button
+        android:id="@+id/btn_edit"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/btn_bottom_margin"
+        android:text="@string/btn_edit_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+    <Button
+        android:id="@+id/btn_save"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/btn_margin_top"
+        android:text="@string/btn_save_text"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/btn_cancel"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_margin"
+        android:text="@string/btn_cancel"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_save" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

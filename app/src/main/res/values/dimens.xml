@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">5dp</dimen>
-    <dimen name="description_text_size">20sp</dimen>
+    <dimen name="description_text_size">23sp</dimen>
+    <dimen name="btn_text_size">15sp</dimen>
+    <dimen name="btn_bottom_margin">15dp</dimen>
+    <dimen name="btn_margin_top">50dp</dimen>
+    <dimen name="phone_top_margin">20dp</dimen>
 </resources>
