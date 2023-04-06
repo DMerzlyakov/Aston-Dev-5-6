@@ -17,7 +17,7 @@ internal class MyContactRecyclerViewAdapter(
     val onClickRecyclerViewInterface: OnClickRecyclerViewInterface,
 ) : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
 
-
+    private val filteredList = mValues.toMutableList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             FragmentContactBinding.inflate(
@@ -27,20 +27,28 @@ internal class MyContactRecyclerViewAdapter(
             )
         )
     }
-
+    fun setFilter(filter: String) {
+        filteredList.clear()
+        mValues.forEach { item ->
+            if (item.name.plus(" " + item.surname).contains(filter, ignoreCase = true)) {
+                filteredList.add(item)
+            }
+        }
+        notifyDataSetChanged()
+    }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
-            mItem = mValues[position]
-            mNumberView.text = mValues[position].phoneNumber
-            mNameView.text = mValues[position].name
-            mSurnameView.text = mValues[position].surname
-            mIdView.text = mValues[position].id.toString()
-            mAvatarView.setImageFromUrl(mValues[position].avatarUrl)
+            mItem = filteredList[position]
+            mNumberView.text = filteredList[position].phoneNumber
+            mNameView.text = filteredList[position].name
+            mSurnameView.text = filteredList[position].surname
+            mIdView.text = filteredList[position].id.toString()
+            mAvatarView.setImageFromUrl(filteredList[position].avatarUrl)
         }
     }
 
     override fun getItemCount(): Int {
-        return mValues.size
+        return filteredList.size
     }
 
     inner class ViewHolder(binding: FragmentContactBinding) :

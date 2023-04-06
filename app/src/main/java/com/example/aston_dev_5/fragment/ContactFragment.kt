@@ -2,19 +2,20 @@ package com.example.aston_dev_5.fragment
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.aston_dev_5.utils.ConstantsProject
-import com.example.aston_dev_5.utils.ConstantsProject.ARG_PARAM_CONTACT_ITEM
 import com.example.aston_dev_5.R
-import com.example.aston_dev_5.placeholder.ContactContent
+import com.example.aston_dev_5.databinding.FragmentContactListBinding
 import com.example.aston_dev_5.placeholder.ContactContent.ContactItem
 import com.example.aston_dev_5.placeholder.ContactContent.ITEMS
+import com.example.aston_dev_5.utils.ConstantsProject
+import com.example.aston_dev_5.utils.ConstantsProject.ARG_PARAM_CONTACT_ITEM
 import com.example.aston_dev_5.utils.HelpersUtil
 
 /**
@@ -23,31 +24,31 @@ import com.example.aston_dev_5.utils.HelpersUtil
 class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
     private var adapter: MyContactRecyclerViewAdapter? = null
+    private lateinit var binding: FragmentContactListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_contact_list, container, false)
+    ): View {
 
-        // Установка адаптера для RecyclerView
-        if (view is RecyclerView) {
-            view.layoutManager = LinearLayoutManager(requireContext())
-            adapter = MyContactRecyclerViewAdapter(ITEMS, this)
-            view.adapter = adapter
-        }
+        binding = FragmentContactListBinding.inflate(inflater, container, false)
+
+        initialRecycleView()
         setListenersForResultApi()
-        return view
+
+        binding.searchEditText.doAfterTextChanged { adapter?.setFilter(it.toString().trim())}
+
+        return binding.root
     }
 
-    private fun getParcelableData(result: Bundle) =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Если sdk >= 33
-            result.getParcelable(ARG_PARAM_CONTACT_ITEM, ContactItem::class.java)
-        } else {
-            // Если меньше
-            result.getParcelable<ContactItem>(ARG_PARAM_CONTACT_ITEM)
-        }
+    /** Установка адаптера для RecyclerView*/
+    private fun initialRecycleView() = with(binding){
+        list.layoutManager = LinearLayoutManager(requireContext())
+        adapter = MyContactRecyclerViewAdapter(ITEMS, this@ContactFragment)
+        list.adapter = adapter
+    }
+
+
 
     private fun setListenersForResultApi() {
         setFragmentResultListener(ConstantsProject.REQUEST_KEY) { _, result ->
@@ -64,6 +65,15 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         }
     }
 
+
+    private fun getParcelableData(result: Bundle) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Если sdk >= 33
+            result.getParcelable(ARG_PARAM_CONTACT_ITEM, ContactItem::class.java)
+        } else {
+            // Если меньше
+            result.getParcelable<ContactItem>(ARG_PARAM_CONTACT_ITEM)
+        }
 
     override fun onItemClick(item: ContactItem, position: Int) {
         val descriptionFragment = DescriptionContactFragment.newInstance(item)
