@@ -7,28 +7,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.aston_dev_5.ConstantsProject;
-import com.example.aston_dev_5.HelpersUtil;
+import com.example.aston_dev_5.utils.ConstantsProject;
 import com.example.aston_dev_5.R;
 import com.example.aston_dev_5.databinding.FragmentDescriptionContactBinding;
+import com.example.aston_dev_5.placeholder.ContactContent;
+import com.example.aston_dev_5.utils.HelpersUtil;
+
+import static com.example.aston_dev_5.utils.ConstantsProject.ARG_PARAM_CONTACT_ITEM;
+import static com.example.aston_dev_5.utils.HelpersUtilKt.setImageFromUrl;
+
 
 /**
  * DescriptionContactFragment - Фрагмент для отображения подробной информации о Контакте
  */
 public class DescriptionContactFragment extends Fragment implements View.OnClickListener {
 
-    private int mId;
-    private String mName;
-    private String mSurname;
-    private String mPhoneNumber;
-
+    private ContactContent.ContactItem contactItem;
     private FragmentDescriptionContactBinding binding;
+
 
     /**
      * Пустой конструктор DescriptionContactFragment
@@ -42,10 +43,7 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mId = getArguments().getInt(ConstantsProject.ARG_PARAM_ID);
-            mName = getArguments().getString(ConstantsProject.ARG_PARAM_NAME);
-            mSurname = getArguments().getString(ConstantsProject.ARG_PARAM_SURNAME);
-            mPhoneNumber = getArguments().getString(ConstantsProject.ARG_PARAM_PHONE_NUMBER);
+            contactItem = getArguments().getParcelable(ARG_PARAM_CONTACT_ITEM);
         }
     }
 
@@ -74,15 +72,12 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
                 break;
 
             case R.id.btn_save:
-                mName = binding.editNameView.getText().toString();
-                mSurname = binding.editSurnameView.getText().toString();
-                mPhoneNumber = binding.editPhoneView.getText().toString();
+                contactItem.name = binding.editNameView.getText().toString();
+                contactItem.surname = binding.editSurnameView.getText().toString();
+                contactItem.phoneNumber = binding.editPhoneView.getText().toString();
 
                 Bundle args = new Bundle();
-                args.putInt(ConstantsProject.ARG_PARAM_ID, mId);
-                args.putString(ConstantsProject.ARG_PARAM_NAME, mName);
-                args.putString(ConstantsProject.ARG_PARAM_SURNAME, mSurname);
-                args.putString(ConstantsProject.ARG_PARAM_PHONE_NUMBER, mPhoneNumber);
+                args.putParcelable(ARG_PARAM_CONTACT_ITEM, contactItem);
                 getParentFragmentManager().setFragmentResult(ConstantsProject.REQUEST_KEY, args);
 
                 if (HelpersUtil.isScreenForTwoFragments(getResources())) {
@@ -104,9 +99,10 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
      * Отображение текстовых данных на фрагменте
      */
     private void setTextToTextView() {
-        binding.nameView.setText(mName);
-        binding.surnameView.setText(mSurname);
-        binding.phoneView.setText(mPhoneNumber);
+        binding.nameView.setText(contactItem.id + ". " + contactItem.name);
+        binding.surnameView.setText(contactItem.surname);
+        binding.phoneView.setText(contactItem.phoneNumber);
+        setImageFromUrl(binding.imageAvatar, contactItem.avatarUrl);
     }
 
     /**
@@ -149,9 +145,9 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
         binding.editPhoneView.setVisibility(editVisibility);
 
         if (editVisibility == View.VISIBLE) {
-            binding.editNameView.setText(mName);
-            binding.editSurnameView.setText(mSurname);
-            binding.editPhoneView.setText(mPhoneNumber);
+            binding.editNameView.setText(contactItem.name);
+            binding.editSurnameView.setText(contactItem.surname);
+            binding.editPhoneView.setText(contactItem.phoneNumber);
         }
 
         binding.nameView.setVisibility(textVisibility);
@@ -159,15 +155,13 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
         binding.phoneView.setVisibility(textVisibility);
     }
 
-    /** Создание экземпляра Фрагмента с первоначальными данными */
-    public static DescriptionContactFragment newInstance(int id, String name, String surname, String number) {
-
+    /**
+     * Создание экземпляра Фрагмента с первоначальными данными
+     */
+    public static DescriptionContactFragment newInstance(ContactContent.ContactItem item) {
         DescriptionContactFragment fragment = new DescriptionContactFragment();
         Bundle args = new Bundle();
-        args.putInt(ConstantsProject.ARG_PARAM_ID, id);
-        args.putString(ConstantsProject.ARG_PARAM_NAME, name);
-        args.putString(ConstantsProject.ARG_PARAM_SURNAME, surname);
-        args.putString(ConstantsProject.ARG_PARAM_PHONE_NUMBER, number);
+        args.putParcelable(ARG_PARAM_CONTACT_ITEM, item);
         fragment.setArguments(args);
 
         return fragment;

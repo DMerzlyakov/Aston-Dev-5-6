@@ -1,7 +1,13 @@
-package com.example.aston_dev_5
+package com.example.aston_dev_5.utils
 
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.util.Log
+import android.widget.ImageView
+import com.example.aston_dev_5.R
+import com.squareup.picasso.Callback
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.Picasso
 import java.util.*
 
 /**
@@ -51,7 +57,6 @@ object HelpersUtil {
         "Степанов",
         "Николаев"
     )
-    private const val urlImageRandom = "https://picsum.photos/300/300"
     private val random = Random()
 
     /**
@@ -90,17 +95,20 @@ object HelpersUtil {
         }
         return phoneNumber.toString()
     }
+}
 
-    /**
-     * Генерация случайной аватарки
-     */
-    @JvmStatic
-    fun generateImage():  {
-        val phoneNumber = StringBuilder("+7")
-        for (i in 0..9) {
-            phoneNumber.append(random.nextInt(10))
-        }
-        return phoneNumber.toString()
-    }
-
+/** Функция-расширение для загрузки аватара по URL */
+fun ImageView.setImageFromUrl(url: String) {
+    Picasso.get()
+        .load(url)
+        .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+        .transform(CircularTransformation(0))
+        .error(R.drawable.image_not_available)
+        .fit()
+        .into(this, object : Callback {
+            override fun onSuccess() {}
+            override fun onError(e: Exception) {
+                Log.e("Error on download Avatar", e.message.toString())
+            }
+        })
 }

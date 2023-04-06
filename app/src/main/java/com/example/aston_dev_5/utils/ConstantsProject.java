@@ -1,4 +1,4 @@
-package com.example.aston_dev_5;
+package com.example.aston_dev_5.utils;
 
 
 /**
@@ -7,13 +7,11 @@ package com.example.aston_dev_5;
 public final class ConstantsProject {
 
     /** Параметры для передачи в Bundle */
-    public static final String ARG_PARAM_NAME = "name";
-    public static final String ARG_PARAM_SURNAME = "surname";
-    public static final String ARG_PARAM_PHONE_NUMBER = "number";
-    public static final String ARG_PARAM_ID = "id";
+    public static final String ARG_PARAM_CONTACT_ITEM = "contact_item";
 
     /** Ключи для передачи по Result Api */
     public static final String REQUEST_KEY = "update_contact";
+
 
 
 }

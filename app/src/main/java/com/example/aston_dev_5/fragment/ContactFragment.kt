@@ -1,5 +1,6 @@
 package com.example.aston_dev_5.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aston_dev_5.ConstantsProject
-import com.example.aston_dev_5.HelpersUtil
+import com.example.aston_dev_5.utils.ConstantsProject
+import com.example.aston_dev_5.utils.ConstantsProject.ARG_PARAM_CONTACT_ITEM
 import com.example.aston_dev_5.R
 import com.example.aston_dev_5.placeholder.ContactContent
 import com.example.aston_dev_5.placeholder.ContactContent.ContactItem
+import com.example.aston_dev_5.placeholder.ContactContent.ITEMS
+import com.example.aston_dev_5.utils.HelpersUtil
 
 /**
  * ContactFragment - Отображение RecyclerView контактов
@@ -30,56 +33,64 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         // Установка адаптера для RecyclerView
         if (view is RecyclerView) {
             view.layoutManager = LinearLayoutManager(requireContext())
-            adapter = MyContactRecyclerViewAdapter(ContactContent.ITEMS, this)
+            adapter = MyContactRecyclerViewAdapter(ITEMS, this)
             view.adapter = adapter
         }
         setListenersForResultApi()
         return view
     }
 
+    private fun getParcelableData(result: Bundle) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Если sdk >= 33
+            result.getParcelable(ARG_PARAM_CONTACT_ITEM, ContactItem::class.java)
+        } else {
+            // Если меньше
+            result.getParcelable<ContactItem>(ARG_PARAM_CONTACT_ITEM)
+        }
+
     private fun setListenersForResultApi() {
-
         setFragmentResultListener(ConstantsProject.REQUEST_KEY) { _, result ->
+            val contactItem: ContactItem? = getParcelableData(result)
+            val itemToChange = ITEMS.find { it.id == contactItem?.id }
 
-            val mId = result.getInt(ConstantsProject.ARG_PARAM_ID)
-            val mName = result.getString(ConstantsProject.ARG_PARAM_NAME)
-            val mSurname = result.getString(ConstantsProject.ARG_PARAM_SURNAME)
-            val mPhoneNumber = result.getString(ConstantsProject.ARG_PARAM_PHONE_NUMBER)
-            ContactContent.ITEMS[mId].editItem(mName, mSurname, mPhoneNumber)
-            adapter?.notifyItemChanged(mId)
+            with(itemToChange) {
+                this?.name = contactItem?.name
+                this?.surname = contactItem?.surname
+                this?.phoneNumber = contactItem?.phoneNumber
+            }
+
+            adapter?.notifyItemChanged(ITEMS.indexOf(itemToChange))
         }
     }
 
-    override fun onItemClick(item: ContactItem) {
-        startDescriptionFragment(item)
-    }
 
-    private fun startDescriptionFragment(item: ContactItem) {
+    override fun onItemClick(item: ContactItem, position: Int) {
+        val descriptionFragment = DescriptionContactFragment.newInstance(item)
+
         if (HelpersUtil.isScreenForTwoFragments(resources)) {
             parentFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragmentContainer2,
-                    DescriptionContactFragment.newInstance(
-                        item.id,
-                        item.name,
-                        item.surname,
-                        item.phoneNumber
-                    )
+                    descriptionFragment
                 )
                 .commit()
         } else {
             parentFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragmentContainer,
-                    DescriptionContactFragment.newInstance(
-                        item.id,
-                        item.name,
-                        item.surname,
-                        item.phoneNumber
-                    )
+                    descriptionFragment
                 )
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    override fun onItemLongClick(item: ContactItem, position: Int) {
+        ITEMS.remove(item)
+        adapter?.let {
+            it.notifyItemRemoved(position)
+            it.notifyItemRangeChanged(position, it.itemCount)
         }
     }
 }

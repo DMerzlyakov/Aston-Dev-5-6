@@ -1,9 +1,11 @@
 package com.example.aston_dev_5.placeholder;
 
-import com.example.aston_dev_5.HelpersUtil;
-import com.example.aston_dev_5.R;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.Picasso;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import com.example.aston_dev_5.utils.HelpersUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ public class ContactContent {
 
     public static final List<ContactItem> ITEMS = new ArrayList<ContactItem>();
 
-    private static final int COUNT = 150;
+    private static final int COUNT = 200;
 
     static {
         // Add some sample items.
@@ -33,7 +35,7 @@ public class ContactContent {
         return new ContactItem(
                 position, HelpersUtil.generateName(),
                 HelpersUtil.generateSurname(), HelpersUtil.generatePhoneNumber(),
-                HelpersUtil.generateUrl()
+                "https://picsum.photos/id/" + position + "/150"
         );
     }
 
@@ -41,20 +43,28 @@ public class ContactContent {
     /**
      * Класс для хранения информации о контакте
      */
-    public static class ContactItem {
+    public static class ContactItem implements Parcelable {
         public final int id;
 
         public String name;
         public String surname;
         public String phoneNumber;
-        public String url;
+        public String avatarUrl;
 
-        public ContactItem(int id, String name, String surname, String phoneNumber, String url) {
+        public ContactItem(int id, String name, String surname, String phoneNumber, String avatarUrl) {
             this.id = id;
             this.name = name;
             this.surname = surname;
             this.phoneNumber = phoneNumber;
-            this.url = url;
+            this.avatarUrl = avatarUrl;
+        }
+
+        public ContactItem(Parcel parcel) {
+            this.id = parcel.readInt();
+            this.name = parcel.readString();
+            this.surname = parcel.readString();
+            this.phoneNumber = parcel.readString();
+            this.avatarUrl = parcel.readString();
         }
 
         @Override
@@ -62,11 +72,31 @@ public class ContactContent {
             return id + " " + name + " " + surname + " " + phoneNumber;
         }
 
-        public void editItem(String name, String surname, String phoneNumber) {
-            this.name = name;
-            this.surname = surname;
-            this.phoneNumber = phoneNumber;
-
+        @Override
+        public int describeContents() {
+            return 0;
         }
+
+        @Override
+        public void writeToParcel(@NonNull Parcel parcel, int i) {
+            parcel.writeInt(id);
+            parcel.writeString(name);
+            parcel.writeString(surname);
+            parcel.writeString(phoneNumber);
+            parcel.writeString(avatarUrl);
+        }
+
+        public static final Parcelable.Creator<ContactItem> CREATOR = new Parcelable.Creator<ContactItem>() {
+
+            @Override
+            public ContactItem createFromParcel(Parcel parcel) {
+                return new ContactItem(parcel);
+            }
+
+            @Override
+            public ContactItem[] newArray(int i) {
+                return new ContactItem[i];
+            }
+        };
     }
 }
