@@ -61,7 +61,7 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
                 this?.phoneNumber = contactItem?.phoneNumber
             }
 
-            adapter?.notifyItemChanged(ITEMS.indexOf(itemToChange))
+            adapter?.notifyDataSetChanged()
         }
     }
 
