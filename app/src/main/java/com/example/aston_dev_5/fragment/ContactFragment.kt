@@ -98,9 +98,6 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
     override fun onItemLongClick(item: ContactItem, position: Int) {
         ITEMS.remove(item)
-        adapter?.let {
-            it.notifyItemRemoved(position)
-            it.notifyItemRangeChanged(position, it.itemCount)
-        }
+        adapter?.deleteItem(item, position)
     }
 }

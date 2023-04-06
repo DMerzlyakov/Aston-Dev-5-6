@@ -36,6 +36,12 @@ internal class MyContactRecyclerViewAdapter(
         }
         notifyDataSetChanged()
     }
+
+    fun deleteItem(item: ContactItem, position: Int){
+        filteredList.remove(item)
+        notifyItemRemoved(position)
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             mItem = filteredList[position]
@@ -76,7 +82,6 @@ internal class MyContactRecyclerViewAdapter(
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onClickRecyclerViewInterface.onItemLongClick(mItem, position)
-
                 }
                 true
             }
