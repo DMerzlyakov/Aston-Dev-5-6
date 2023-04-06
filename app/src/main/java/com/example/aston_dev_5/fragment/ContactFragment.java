@@ -28,7 +28,6 @@ public class ContactFragment extends Fragment implements OnClickRecyclerViewInte
     public ContactFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,6 +69,10 @@ public class ContactFragment extends Fragment implements OnClickRecyclerViewInte
 
     @Override
     public void onItemClick(ContactContent.ContactItem item) {
+        startDescriptionFragment(item);
+    }
+
+    private void startDescriptionFragment(ContactContent.ContactItem item) {
         if (HelpersUtil.isScreenForTwoFragments(getResources())) {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer2,
