@@ -1,6 +1,9 @@
 package com.example.aston_dev_5.placeholder;
 
 import com.example.aston_dev_5.HelpersUtil;
+import com.example.aston_dev_5.R;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,7 @@ public class ContactContent {
 
     public static final List<ContactItem> ITEMS = new ArrayList<ContactItem>();
 
-    private static final int COUNT = 25;
+    private static final int COUNT = 150;
 
     static {
         // Add some sample items.
@@ -21,6 +24,7 @@ public class ContactContent {
         }
     }
 
+
     private static void addItem(ContactItem item) {
         ITEMS.add(item);
     }
@@ -28,7 +32,8 @@ public class ContactContent {
     private static ContactItem createPlaceholderItem(int position) {
         return new ContactItem(
                 position, HelpersUtil.generateName(),
-                HelpersUtil.generateSurname(), HelpersUtil.generatePhoneNumber()
+                HelpersUtil.generateSurname(), HelpersUtil.generatePhoneNumber(),
+                HelpersUtil.generateUrl()
         );
     }
 
@@ -42,12 +47,14 @@ public class ContactContent {
         public String name;
         public String surname;
         public String phoneNumber;
+        public String url;
 
-        public ContactItem(int id, String name, String surname, String phoneNumber) {
+        public ContactItem(int id, String name, String surname, String phoneNumber, String url) {
             this.id = id;
             this.name = name;
             this.surname = surname;
             this.phoneNumber = phoneNumber;
+            this.url = url;
         }
 
         @Override

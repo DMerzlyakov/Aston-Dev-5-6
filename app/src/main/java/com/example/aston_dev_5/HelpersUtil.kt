@@ -1,53 +1,106 @@
-package com.example.aston_dev_5;
+package com.example.aston_dev_5
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
-
-import java.util.Random;
+import android.content.res.Configuration
+import android.content.res.Resources
+import java.util.*
 
 /**
  * Утилиты, которые помогают в работе приложения
  */
-public class HelpersUtil {
-
-    static private final String[] firstNames = {"Александр", "Андрей", "Антон", "Артем", "Владимир", "Дмитрий", "Егор", "Иван", "Кирилл", "Максим", "Никита", "Олег", "Петр", "Роман", "Сергей", "Тимур", "Фёдор", "Юрий", "Ярослав"};
-    static private final String[] lastNames = {"Иванов", "Смирнов", "Кузнецов", "Попов", "Васильев", "Петров", "Соколов", "Михайлов", "Новиков", "Федоров", "Морозов", "Волков", "Алексеев", "Лебедев", "Семёнов", "Егоров", "Павлов", "Козлов", "Степанов", "Николаев"};
-
-    static private final Random random = new Random();
-
+object HelpersUtil {
+    private val firstNames = arrayOf(
+        "Александр",
+        "Андрей",
+        "Антон",
+        "Артем",
+        "Владимир",
+        "Дмитрий",
+        "Егор",
+        "Иван",
+        "Кирилл",
+        "Максим",
+        "Никита",
+        "Олег",
+        "Петр",
+        "Роман",
+        "Сергей",
+        "Тимур",
+        "Фёдор",
+        "Юрий",
+        "Ярослав"
+    )
+    private val lastNames = arrayOf(
+        "Иванов",
+        "Смирнов",
+        "Кузнецов",
+        "Попов",
+        "Васильев",
+        "Петров",
+        "Соколов",
+        "Михайлов",
+        "Новиков",
+        "Федоров",
+        "Морозов",
+        "Волков",
+        "Алексеев",
+        "Лебедев",
+        "Семёнов",
+        "Егоров",
+        "Павлов",
+        "Козлов",
+        "Степанов",
+        "Николаев"
+    )
+    private const val urlImageRandom = "https://picsum.photos/300/300"
+    private val random = Random()
 
     /**
      * Проверка на размерность экрана для расположения двух фрагментов сразу
      */
-    public static boolean isScreenForTwoFragments(Resources resources) {
-        return (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ||
-                (resources.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE);
+    @JvmStatic
+    fun isScreenForTwoFragments(resources: Resources): Boolean {
+        return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ||
+                resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
 
     /**
      * Генерация случайного имени
      */
-    public static String generateName() {
-        return firstNames[random.nextInt(firstNames.length)];
+    @JvmStatic
+    fun generateName(): String {
+        return firstNames[random.nextInt(firstNames.size)]
     }
 
     /**
      * Генерация случайной фамилии
      */
-    public static String generateSurname() {
-        return lastNames[random.nextInt(lastNames.length)];
+    @JvmStatic
+    fun generateSurname(): String {
+        return lastNames[random.nextInt(lastNames.size)]
     }
 
     /**
      * Генерация случайного номера
      */
-    public static String generatePhoneNumber() {
-        StringBuilder phoneNumber = new StringBuilder("+7");
-        for (int i = 0; i < 10; i++) {
-            phoneNumber.append(random.nextInt(10));
+    @JvmStatic
+    fun generatePhoneNumber(): String {
+        val phoneNumber = StringBuilder("+7")
+        for (i in 0..9) {
+            phoneNumber.append(random.nextInt(10))
         }
-        return phoneNumber.toString();
+        return phoneNumber.toString()
     }
 
+    /**
+     * Генерация случайной аватарки
+     */
+    @JvmStatic
+    fun generateImage():  {
+        val phoneNumber = StringBuilder("+7")
+        for (i in 0..9) {
+            phoneNumber.append(random.nextInt(10))
+        }
+        return phoneNumber.toString()
+    }
 
 }
