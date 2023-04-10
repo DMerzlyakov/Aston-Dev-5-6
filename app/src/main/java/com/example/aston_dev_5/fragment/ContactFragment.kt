@@ -65,7 +65,7 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
     /** Установка слушателя данных по ResultApi от других фрагментов*/
     private fun setListenersForResultApi() {
-        setFragmentResultListener(ConstantsProject.REQUEST_KEY) { _, result ->
+        setFragmentResultListener(ConstantsProject.REQUEST_KEY) {  _, result ->
             val contactItem: ContactItem? = getParcelableData(result)
             val newItemsList = adapter?.currentList?.toMutableList()
             val itemToChange = newItemsList?.find { it.id == contactItem?.id }
@@ -78,7 +78,11 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
             )
             newItemsList?.set(newItemsList.indexOf(itemToChange), newItem)
 
-            adapter?.submitList(newItemsList)
+            val handler = Handler(Looper.getMainLooper())
+
+            handler.postDelayed({
+                adapter?.submitList(newItemsList)
+            }, 200L)
 
             if (!HelpersUtil.isScreenForTwoFragments(resources)) {
                 binding.searchEditText.setText("")
@@ -151,4 +155,5 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         buff?.remove(item)
         adapter?.submitList(buff)
     }
+
 }
