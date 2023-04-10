@@ -58,6 +58,8 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         list.layoutManager = LinearLayoutManager(requireContext())
         adapter = ContactRecyclerViewAdapter(this@ContactFragment)
         list.adapter = adapter
+        val dividerItemDecoration = ContactItemDecorator(1,10)
+        list.addItemDecoration(dividerItemDecoration)
         adapter?.submitList(ITEMS.toList())
     }
 
