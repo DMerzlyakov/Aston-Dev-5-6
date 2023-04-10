@@ -72,15 +72,16 @@ public class DescriptionContactFragment extends Fragment implements View.OnClick
                 break;
 
             case R.id.btn_save:
-                contactItem.name = binding.editNameView.getText().toString();
-                contactItem.surname = binding.editSurnameView.getText().toString();
-                contactItem.phoneNumber = binding.editPhoneView.getText().toString();
 
+                ContactContent.ContactItem updateContact = new ContactContent.ContactItem(contactItem.id,
+                        binding.editNameView.getText().toString(), binding.editSurnameView.getText().toString(),
+                        binding.editPhoneView.getText().toString(), contactItem.avatarUrl);
                 Bundle args = new Bundle();
-                args.putParcelable(ARG_PARAM_CONTACT_ITEM, contactItem);
+                args.putParcelable(ARG_PARAM_CONTACT_ITEM, updateContact);
                 getParentFragmentManager().setFragmentResult(ConstantsProject.REQUEST_KEY, args);
 
                 if (HelpersUtil.isScreenForTwoFragments(getResources())) {
+                    contactItem = updateContact;
                     changeVisibilityButtons();
                     changeVisibilityTextViews();
                     setTextToTextView();

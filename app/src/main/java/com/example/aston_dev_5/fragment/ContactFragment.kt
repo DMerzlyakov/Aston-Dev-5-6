@@ -2,7 +2,8 @@ package com.example.aston_dev_5.fragment
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,7 @@ import com.example.aston_dev_5.utils.HelpersUtil
  */
 class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
-    private var adapter: MyContactRecyclerViewAdapter? = null
+    private var adapter: ContactRecyclerViewAdapter? = null
     private lateinit var binding: FragmentContactListBinding
 
     override fun onCreateView(
@@ -36,36 +37,72 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         initialRecycleView()
         setListenersForResultApi()
 
-        binding.searchEditText.doAfterTextChanged { adapter?.setFilter(it.toString().trim())}
+        binding.searchEditText.doAfterTextChanged { filterData(it.toString().trim()) }
 
         return binding.root
     }
 
-    /** Установка адаптера для RecyclerView*/
-    private fun initialRecycleView() = with(binding){
-        list.layoutManager = LinearLayoutManager(requireContext())
-        adapter = MyContactRecyclerViewAdapter(ITEMS, this@ContactFragment)
-        list.adapter = adapter
+    /** Фильтрация данных по строке */
+    private fun filterData(strFilter: String) {
+        val filteredList = mutableListOf<ContactItem>()
+        ITEMS.forEach { item ->
+            if (item.name.plus(" " + item.surname).contains(strFilter, ignoreCase = true)) {
+                filteredList.add(item)
+            }
+        }
+        adapter?.submitList(filteredList)
     }
 
+    /** Установка адаптера для RecyclerView*/
+    private fun initialRecycleView() = with(binding) {
+        list.layoutManager = LinearLayoutManager(requireContext())
+        adapter = ContactRecyclerViewAdapter(this@ContactFragment)
+        list.adapter = adapter
+        adapter?.submitList(ITEMS)
+    }
 
-
+    /** Установка слушателя данных по ResultApi от других фрагментов*/
     private fun setListenersForResultApi() {
         setFragmentResultListener(ConstantsProject.REQUEST_KEY) { _, result ->
             val contactItem: ContactItem? = getParcelableData(result)
-            val itemToChange = ITEMS.find { it.id == contactItem?.id }
+            val newItemsList = adapter?.currentList?.toMutableList()
+            val itemToChange = newItemsList?.find { it.id == contactItem?.id }
+            val newItem = ContactItem(
+                contactItem!!.id,
+                contactItem.name,
+                contactItem.surname,
+                contactItem.phoneNumber,
+                contactItem.avatarUrl
+            )
+            newItemsList?.set(newItemsList.indexOf(itemToChange), newItem)
 
-            with(itemToChange) {
-                this?.name = contactItem?.name
-                this?.surname = contactItem?.surname
-                this?.phoneNumber = contactItem?.phoneNumber
+            adapter?.submitList(newItemsList)
+
+
+            if (newItemsList != null) {
+                updateDataList(newItemsList)
             }
 
-            adapter?.notifyDataSetChanged()
         }
     }
 
+    /**
+     * Отложенное обновление данных
+     * Так как используется список, а не бд, нужна небольшая задержка
+     * Чтобы DiffUtil корректно работал
+     * */
+    private fun updateDataList(newItems: List<ContactItem>) {
+        val delayInMillis = 2000L // 3 секунды
+        val handler = Handler(Looper.getMainLooper())
 
+        handler.postDelayed({
+            ITEMS = newItems
+        }, delayInMillis)
+
+
+    }
+
+    /** Преобразование из Parcelable в ContactItem */
     private fun getParcelableData(result: Bundle) =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Если sdk >= 33
@@ -75,6 +112,9 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
             result.getParcelable<ContactItem>(ARG_PARAM_CONTACT_ITEM)
         }
 
+    /**
+     * Переопределенные методы для обработки кликов по элементу
+     */
     override fun onItemClick(item: ContactItem, position: Int) {
         val descriptionFragment = DescriptionContactFragment.newInstance(item)
 
@@ -98,6 +138,9 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
     override fun onItemLongClick(item: ContactItem, position: Int) {
         ITEMS.remove(item)
-        adapter?.deleteItem(item, position)
+
+        val buff = adapter?.currentList?.toMutableList()
+        buff?.remove(item)
+        adapter?.submitList(buff)
     }
 }

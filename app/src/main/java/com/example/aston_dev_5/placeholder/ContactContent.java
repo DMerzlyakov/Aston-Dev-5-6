@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.aston_dev_5.utils.HelpersUtil;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class ContactContent {
 
-    public static final List<ContactItem> ITEMS = new ArrayList<ContactItem>();
+    public static List<ContactItem> ITEMS = new ArrayList<ContactItem>();
 
     private static final int COUNT = 200;
 
@@ -38,7 +39,6 @@ public class ContactContent {
                 "https://picsum.photos/id/" + position + "/150"
         );
     }
-
 
     /**
      * Класс для хранения информации о контакте
@@ -68,10 +68,27 @@ public class ContactContent {
         }
 
         @Override
+        public boolean equals(@Nullable Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            ContactContent.ContactItem contactItem = (ContactContent.ContactItem) obj;
+
+            return id == contactItem.id &&
+                    name.equals(contactItem.name) &&
+                    surname.equals(contactItem.surname) &&
+                    phoneNumber.equals(contactItem.phoneNumber) &&
+                    avatarUrl.equals(contactItem.avatarUrl);
+        }
+
+        @Override
         public String toString() {
             return id + " " + name + " " + surname + " " + phoneNumber;
         }
 
+
+        /**
+         * Переопределенные методы для Parcelable
+         */
         @Override
         public int describeContents() {
             return 0;
