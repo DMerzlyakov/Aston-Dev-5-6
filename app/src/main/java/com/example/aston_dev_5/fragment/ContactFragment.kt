@@ -58,7 +58,7 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         list.layoutManager = LinearLayoutManager(requireContext())
         adapter = ContactRecyclerViewAdapter(this@ContactFragment)
         list.adapter = adapter
-        adapter?.submitList(ITEMS)
+        adapter?.submitList(ITEMS.toList())
     }
 
     /** Установка слушателя данных по ResultApi от других фрагментов*/
@@ -78,9 +78,15 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
             adapter?.submitList(newItemsList)
 
+            if (!HelpersUtil.isScreenForTwoFragments(resources)) {
+                binding.searchEditText.setText("")
+            }
 
-            if (newItemsList != null) {
-                updateDataList(newItemsList)
+            val currentListCopy = ITEMS.toMutableList()
+            val currentItem = currentListCopy.find { it.id == contactItem.id }
+            if (currentItem?.id != null) {
+                currentListCopy[currentItem.id] = newItem
+                updateDataList(currentListCopy)
             }
 
         }
