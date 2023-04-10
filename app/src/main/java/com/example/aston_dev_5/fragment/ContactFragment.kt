@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,9 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
     private var adapter: ContactRecyclerViewAdapter? = null
     private lateinit var binding: FragmentContactListBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +59,7 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
     /** Установка адаптера для RecyclerView*/
     private fun initialRecycleView() = with(binding) {
+        Log.e("init", "init")
         list.layoutManager = LinearLayoutManager(requireContext())
         adapter = ContactRecyclerViewAdapter(this@ContactFragment)
         list.adapter = adapter
@@ -76,7 +81,11 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
             )
             newItemsList?.set(newItemsList.indexOf(itemToChange), newItem)
 
-            adapter?.submitList(newItemsList)
+            val handler = Handler(Looper.getMainLooper())
+
+            handler.postDelayed({
+                adapter?.submitList(newItemsList)
+            }, 200L)
 
             if (!HelpersUtil.isScreenForTwoFragments(resources)) {
                 binding.searchEditText.setText("")
@@ -148,5 +157,10 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
         val buff = adapter?.currentList?.toMutableList()
         buff?.remove(item)
         adapter?.submitList(buff)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("filter", "asd")
     }
 }
