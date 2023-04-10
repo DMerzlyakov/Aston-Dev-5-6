@@ -82,7 +82,7 @@ class ContactFragment : Fragment(), OnClickRecyclerViewInterface {
 
             handler.postDelayed({
                 adapter?.submitList(newItemsList)
-            }, 200L)
+            }, 500L)
 
             if (!HelpersUtil.isScreenForTwoFragments(resources)) {
                 binding.searchEditText.setText("")
